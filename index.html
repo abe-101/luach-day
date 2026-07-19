@@ -1,0 +1,308 @@
+<!--
+  luach.day — temporary landing page
+  A tear-off calendar leaf that shows today's Hebrew date and asks visitors for ideas.
+  Single self-contained file. Host it anywhere static.
+
+  To collect ideas: by default the "Send idea" button opens an email.
+  Change IDEA_EMAIL below to your address, or swap the sendIdea() body
+  for a fetch() to a form endpoint (Formspree, your own Django view, etc).
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>luach.day</title>
+<meta name="description" content="A day on the luach. This domain hasn't decided what it wants to be yet.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --wall: #E6E1D4;
+    --leaf: #FBF8F1;
+    --ink: #17233F;
+    --ink-soft: #5B6480;
+    --red: #B23A2E;
+    --gold: #A9843F;
+    --rule: rgba(23, 35, 63, 0.14);
+    --shadow: 24px 30px 60px -30px rgba(23, 35, 63, 0.45);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; }
+
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(120% 90% at 50% -10%, rgba(255,255,255,0.5), transparent 55%),
+      var(--wall);
+    color: var(--ink);
+    font-family: "Frank Ruhl Libre", Georgia, serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 20px 32px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .leaf {
+    position: relative;
+    width: min(520px, 100%);
+    background: var(--leaf);
+    border-radius: 3px 3px 8px 8px;
+    box-shadow: var(--shadow);
+    padding: 0 clamp(24px, 7vw, 52px) clamp(32px, 6vw, 44px);
+    animation: settle 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* perforated top edge of the tear-off page */
+  .leaf::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: -1px;
+    height: 14px;
+    background:
+      radial-gradient(circle at 8px 0, transparent 0 4px, var(--leaf) 4.5px) 0 0 / 16px 14px repeat-x;
+    filter: drop-shadow(0 1px 0 var(--rule));
+  }
+
+  .strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 22px 0 14px;
+    border-bottom: 1px solid var(--rule);
+    font-family: "Spline Sans Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .strip .mark { color: var(--red); font-weight: 500; }
+
+  .hebrew {
+    direction: rtl;
+    text-align: center;
+    padding: clamp(26px, 6vw, 40px) 0 clamp(20px, 4vw, 28px);
+  }
+
+  .weekday-he {
+    font-size: clamp(18px, 4.5vw, 22px);
+    font-weight: 500;
+    color: var(--red);
+    margin: 0 0 6px;
+    letter-spacing: 0.01em;
+  }
+
+  .day-he {
+    font-size: clamp(90px, 26vw, 148px);
+    font-weight: 900;
+    line-height: 0.92;
+    margin: 4px 0 2px;
+    letter-spacing: -0.01em;
+  }
+
+  .month-he {
+    font-size: clamp(30px, 8vw, 42px);
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .year-he {
+    font-family: "Spline Sans Mono", ui-monospace, monospace;
+    direction: rtl;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 12px 0 0;
+    letter-spacing: 0.04em;
+  }
+
+  .caption {
+    font-family: "Spline Sans Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    text-align: center;
+    letter-spacing: 0.02em;
+    margin: 4px 0 0;
+    opacity: 0.85;
+  }
+
+  .note {
+    border-top: 1px solid var(--rule);
+    margin-top: clamp(24px, 5vw, 32px);
+    padding-top: clamp(22px, 5vw, 28px);
+    text-align: center;
+  }
+
+  .note h1 {
+    font-size: clamp(19px, 4.6vw, 23px);
+    font-weight: 700;
+    line-height: 1.35;
+    margin: 0 0 10px;
+  }
+  .note h1 .name { color: var(--red); }
+
+  .note p {
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0 auto;
+    max-width: 40ch;
+  }
+
+  .ask {
+    margin-top: 22px;
+    display: flex;
+    gap: 8px;
+  }
+
+  .ask input {
+    flex: 1;
+    min-width: 0;
+    font-family: "Spline Sans Mono", ui-monospace, monospace;
+    font-size: 14px;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 12px 14px;
+    transition: border-color 0.15s ease;
+  }
+  .ask input::placeholder { color: #9aa0b0; }
+  .ask input:focus {
+    outline: none;
+    border-color: var(--ink);
+    box-shadow: 0 0 0 3px rgba(23, 35, 63, 0.08);
+  }
+
+  .ask button {
+    font-family: "Spline Sans Mono", ui-monospace, monospace;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    color: #fff;
+    background: var(--red);
+    border: 1px solid var(--red);
+    border-radius: 6px;
+    padding: 0 18px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: transform 0.1s ease, background 0.15s ease;
+  }
+  .ask button:hover { background: #9c2f24; }
+  .ask button:active { transform: translateY(1px); }
+  .ask button:focus-visible {
+    outline: 3px solid rgba(178, 58, 46, 0.35);
+    outline-offset: 2px;
+  }
+
+  .confirm {
+    font-family: "Spline Sans Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    color: var(--gold);
+    text-align: center;
+    margin: 14px 0 0;
+    min-height: 1em;
+  }
+
+  footer {
+    margin-top: 26px;
+    font-family: "Spline Sans Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    opacity: 0.7;
+  }
+
+  @keyframes settle {
+    from { opacity: 0; transform: translateY(-16px) rotateX(6deg); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .leaf { animation: none; }
+  }
+
+  @media (max-width: 420px) {
+    .strip { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .ask { flex-direction: column; }
+    .ask button { padding: 12px; }
+  }
+</style>
+
+<main class="leaf">
+  <div class="strip">
+    <span id="gy-weekday">—</span>
+    <span class="mark" id="gy-date">luach.day</span>
+  </div>
+
+  <div class="hebrew">
+    <p class="weekday-he" id="he-weekday">&nbsp;</p>
+    <div class="day-he" id="he-day">…</div>
+    <p class="month-he" id="he-month">&nbsp;</p>
+    <p class="year-he" id="he-year">&nbsp;</p>
+  </div>
+
+  <p class="caption">today, before sunset. after nightfall, flip the page.</p>
+
+  <div class="note">
+    <h1>This is <span class="name">luach.day</span>, and it hasn't decided what to be yet.</h1>
+    <p>For now it just shows the date, which is the one thing a luach is obligated to do. What should it grow into?</p>
+
+    <div class="ask">
+      <input id="idea" type="text" placeholder="an idea for luach.day…" aria-label="Your idea for luach.day">
+      <button id="send" type="button">Send idea</button>
+    </div>
+    <p class="confirm" id="confirm" role="status"></p>
+  </div>
+</main>
+
+<footer>a placeholder, for now</footer>
+
+<script>
+  // Change this to your address, or replace sendIdea() with a fetch() to your endpoint.
+  const IDEA_EMAIL = "ideas@luach.day";
+
+  (function renderDate() {
+    const now = new Date();
+
+    // Hebrew calendar, straight from Intl. No library needed.
+    const heParts = new Intl.DateTimeFormat("he-u-ca-hebrew", {
+      day: "numeric", month: "long", year: "numeric"
+    }).formatToParts(now);
+    const grab = t => (heParts.find(p => p.type === t) || {}).value || "";
+
+    document.getElementById("he-day").textContent = grab("day");
+    document.getElementById("he-month").textContent = grab("month");
+    document.getElementById("he-year").textContent = grab("year");
+    document.getElementById("he-weekday").textContent =
+      new Intl.DateTimeFormat("he", { weekday: "long" }).format(now);
+
+    document.getElementById("gy-weekday").textContent =
+      new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(now);
+    document.getElementById("gy-date").textContent =
+      new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(now);
+  })();
+
+  function sendIdea() {
+    const input = document.getElementById("idea");
+    const confirm = document.getElementById("confirm");
+    const text = input.value.trim();
+    if (!text) { input.focus(); return; }
+
+    const subject = encodeURIComponent("idea for luach.day");
+    const body = encodeURIComponent(text);
+    window.location.href = `mailto:${IDEA_EMAIL}?subject=${subject}&body=${body}`;
+
+    confirm.textContent = "opening your mail… thank you.";
+    input.value = "";
+  }
+
+  document.getElementById("send").addEventListener("click", sendIdea);
+  document.getElementById("idea").addEventListener("keydown", e => {
+    if (e.key === "Enter") sendIdea();
+  });
+</script>
