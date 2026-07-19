@@ -203,6 +203,28 @@
     opacity: 0.85;
   }
 
+  .hayomyom {
+    border-top: 1px solid var(--rule);
+    margin-top: clamp(22px, 5vw, 30px);
+    padding-top: clamp(20px, 4vw, 26px);
+    text-align: right;
+  }
+  .hy-title {
+    font-size: clamp(20px, 5vw, 26px);
+    font-weight: 700;
+    color: var(--red);
+    margin: 0 0 12px;
+    text-align: center;
+    letter-spacing: 0.01em;
+  }
+  .hy-text {
+    font-size: clamp(16px, 4vw, 18.5px);
+    line-height: 1.85;
+    color: var(--ink);
+    margin: 0;
+    text-align: justify;
+    text-justify: inter-word;
+  }
   .note {
     border-top: 1px solid var(--rule);
     margin-top: clamp(24px, 5vw, 32px);
@@ -281,34 +303,6 @@
     min-height: 1em;
   }
 
-  /* Collapsible "about" — real static text for readers and crawlers,
-     tucked away so it doesn't clutter the leaf. */
-  .about {
-    margin-top: 20px;
-    text-align: left;
-    font-family: "Spline Sans Mono", ui-monospace, monospace;
-    font-size: 12.5px;
-    color: var(--ink-soft);
-  }
-  .about summary {
-    cursor: pointer;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    font-size: 11px;
-    color: var(--ink-soft);
-    list-style: none;
-  }
-  .about summary::-webkit-details-marker { display: none; }
-  .about summary::before { content: "＋ "; color: var(--red); }
-  .about[open] summary::before { content: "－ "; }
-  .about p {
-    font-size: 13px;
-    line-height: 1.65;
-    text-align: left;
-    margin: 12px 0 0;
-    max-width: none;
-  }
-
   footer {
     margin-top: 26px;
     font-family: "Spline Sans Mono", ui-monospace, monospace;
@@ -356,6 +350,11 @@
 
   <p class="caption">today's Hebrew date, before sunset. after nightfall, the page turns.</p>
 
+  <section class="hayomyom" id="hy" lang="he" dir="rtl" hidden>
+    <h2 class="hy-title">היום יום</h2>
+    <p class="hy-text" id="hy-text"></p>
+  </section>
+
   <div class="note">
     <h1>Today on the <span class="name">luach</span></h1>
     <p>A luach is a Jewish calendar. This one shows today's Hebrew date — the one thing every luach owes you — and is still deciding what else to become. Have an idea? Send it.</p>
@@ -365,11 +364,6 @@
       <button id="send" type="button">Send idea</button>
     </div>
     <p class="confirm" id="confirm" role="status"></p>
-
-    <details class="about">
-      <summary>About the luach</summary>
-      <p>A <strong>luach</strong> (לוח) is the Hebrew word for a calendar or almanac. On the Jewish calendar, each day carries a Hebrew date — a day, a month such as Tishrei, Nisan or Elul, and a year counted from creation. The day begins at nightfall rather than midnight, so today's Hebrew date shown here advances after dark. luach.day computes the current date in your own browser and time zone; no account, no tracking, no app to install.</p>
-    </details>
   </div>
 </main>
 
@@ -398,7 +392,45 @@
       new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(now);
     document.getElementById("gy-date").textContent =
       new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(now);
+
+    renderHayomYom(now);
   })();
+
+  // Today's Hayom Yom — Hebrew text, keyed by Hebrew month+day (repeats yearly).
+  // Data is a same-origin static file, so no CORS and no runtime dependency.
+  async function renderHayomYom(now) {
+    // Hebrew month name (English locale) -> data key. Tishri=1 … Elul=12; Adar II = "6b".
+    const MONTH_KEY = {
+      "Tishri": "1", "Heshvan": "2", "Kislev": "3", "Tevet": "4",
+      "Shevat": "5", "Adar": "6", "Adar I": "6", "Adar II": "6b",
+      "Nisan": "7", "Iyar": "8", "Sivan": "9", "Tamuz": "10",
+      "Av": "11", "Elul": "12"
+    };
+
+    const parts = new Intl.DateTimeFormat("en-u-ca-hebrew", {
+      month: "long", day: "numeric"
+    }).formatToParts(now);
+    const grab = t => (parts.find(p => p.type === t) || {}).value || "";
+    const month = MONTH_KEY[grab("month")];
+    const day = grab("day");
+    if (!month || !day) return;
+    const key = `${month}-${day}`;
+
+    let data;
+    try {
+      const res = await fetch("hayomyom.json", { cache: "no-cache" });
+      if (!res.ok) throw new Error("fetch failed");
+      data = await res.json();
+    } catch (e) {
+      return; // leave section hidden; the Hebrew date still shows
+    }
+
+    const text = data[key];
+    if (!text) return;
+
+    document.getElementById("hy-text").textContent = text;
+    document.getElementById("hy").hidden = false;
+  }
 
   function sendIdea() {
     const input = document.getElementById("idea");
