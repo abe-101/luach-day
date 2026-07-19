@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <!--
-  luach.day — shows today's Hebrew date (a "luach" is a Jewish calendar/almanac)
-  and gathers ideas for what the site should grow into.
+  luach.day — today's Hebrew date and the day's Hayom Yom entry,
+  set like a two-color Israeli tear-off calendar leaf: ultramarine + red on white.
   Single self-contained static file. Host it anywhere. No build, no backend.
 
   Ideas arrive by email: the "Send idea" button opens the visitor's mail client
@@ -13,17 +13,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Today's Hebrew Date — luach.day</title>
-<meta name="description" content="luach.day shows today's Hebrew date — the day, month and year on the Jewish calendar, before sunset. A luach is a Jewish calendar; help decide what this one becomes.">
+<meta name="description" content="luach.day shows today's Hebrew date — the day, month and year on the Jewish calendar — with the daily Hayom Yom entry in Hebrew. A luach is a Jewish calendar; help decide what this one becomes.">
 <link rel="canonical" href="https://luach.day/">
 <meta name="robots" content="index,follow">
-<meta name="theme-color" content="#B23A2E">
+<meta name="theme-color" content="#21409A">
 <meta name="author" content="luach.day">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="luach.day">
 <meta property="og:title" content="Today's Hebrew Date — luach.day">
-<meta property="og:description" content="The day, month and year on the Jewish calendar, shown as a tear-off luach leaf. Help decide what luach.day becomes.">
+<meta property="og:description" content="The day, month and year on the Jewish calendar, printed like a tear-off luach leaf, with the daily Hayom Yom. Help decide what luach.day becomes.">
 <meta property="og:url" content="https://luach.day/">
 <meta property="og:image" content="https://luach.day/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -33,15 +33,15 @@
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Today's Hebrew Date — luach.day">
-<meta name="twitter:description" content="The day, month and year on the Jewish calendar, shown as a tear-off luach leaf.">
+<meta name="twitter:description" content="The day, month and year on the Jewish calendar, printed like a tear-off luach leaf.">
 <meta name="twitter:image" content="https://luach.day/og-image.png">
 
-<!-- Inline SVG favicon: a small red tear-off leaf. No external file, no service. -->
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20x='5'%20y='4'%20width='22'%20height='25'%20rx='3'%20fill='%23FBF8F1'%20stroke='%2317233F'%20stroke-width='1.5'/%3E%3Cline%20x1='5'%20y1='11'%20x2='27'%20y2='11'%20stroke='%2317233F'%20stroke-width='1.5'/%3E%3Ctext%20x='16'%20y='25'%20font-family='Georgia,serif'%20font-size='13'%20font-weight='bold'%20text-anchor='middle'%20fill='%23B23A2E'%3E%D7%99%D7%95%D7%9D%3C/text%3E%3C/svg%3E">
+<!-- Inline SVG favicon: two-color print leaf, blue frame, red יום. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20x='3'%20y='3'%20width='26'%20height='26'%20fill='%23FDFDFA'%20stroke='%2321409A'%20stroke-width='2'/%3E%3Cline%20x1='3'%20y1='10'%20x2='29'%20y2='10'%20stroke='%2321409A'%20stroke-width='1.5'/%3E%3Ctext%20x='16'%20y='25'%20font-family='Georgia,serif'%20font-size='13'%20font-weight='bold'%20text-anchor='middle'%20fill='%23CE2B23'%3E%D7%99%D7%95%D7%9D%3C/text%3E%3C/svg%3E">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Suez+One&family=Frank+Ruhl+Libre:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <!-- Structured data: helps search engines understand the page. -->
 <script type="application/ld+json">
@@ -82,6 +82,14 @@
             "@type": "Answer",
             "text": "On the Jewish calendar a new day begins at nightfall, not midnight. So after dark the Hebrew date advances to the next day even though the civil date has not."
           }
+        },
+        {
+          "@type": "Question",
+          "name": "What is Hayom Yom?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hayom Yom is an anthology of Chassidic aphorisms and customs, one for each day of the Hebrew year, compiled by the Lubavitcher Rebbe. luach.day shows the entry for today's Hebrew date in the original Hebrew."
+          }
         }
       ]
     }
@@ -91,14 +99,14 @@
 
 <style>
   :root {
-    --wall: #E6E1D4;
-    --leaf: #FBF8F1;
-    --ink: #17233F;
-    --ink-soft: #5B6480;
-    --red: #B23A2E;
-    --gold: #A9843F;
-    --rule: rgba(23, 35, 63, 0.14);
-    --shadow: 24px 30px 60px -30px rgba(23, 35, 63, 0.45);
+    --paper: #FDFDFA;
+    --blue: #21409A;
+    --blue-soft: #5B6FB5;
+    --red: #CE2B23;
+    --ink: #14181F;
+    --tint: #EEF1F9;
+    --rule: #BFC9E6;
+    --frame-gap: clamp(10px, 2.5vw, 22px);
   }
 
   * { box-sizing: border-box; }
@@ -107,234 +115,202 @@
 
   body {
     min-height: 100vh;
-    background:
-      radial-gradient(120% 90% at 50% -10%, rgba(255,255,255,0.5), transparent 55%),
-      var(--wall);
+    background: var(--paper);
     color: var(--ink);
     font-family: "Frank Ruhl Libre", Georgia, serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 48px 20px 32px;
+    padding: var(--frame-gap);
     -webkit-font-smoothing: antialiased;
   }
 
-  .leaf {
+  /* The whole page is the printed sheet: double ultramarine frame. */
+  .sheet {
     position: relative;
-    width: min(520px, 100%);
-    background: var(--leaf);
-    border-radius: 3px 3px 8px 8px;
-    box-shadow: var(--shadow);
-    padding: 0 clamp(24px, 7vw, 52px) clamp(32px, 6vw, 44px);
-    animation: settle 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    min-height: calc(100vh - 2 * var(--frame-gap));
+    border: 3px solid var(--blue);
+    padding: clamp(18px, 4vw, 44px) clamp(16px, 5vw, 56px) clamp(26px, 4vw, 40px);
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
   }
-
-  /* perforated top edge of the tear-off page */
-  .leaf::before {
+  .sheet::before {
     content: "";
     position: absolute;
-    left: 0; right: 0; top: -1px;
-    height: 14px;
-    background:
-      radial-gradient(circle at 8px 0, transparent 0 4px, var(--leaf) 4.5px) 0 0 / 16px 14px repeat-x;
-    filter: drop-shadow(0 1px 0 var(--rule));
+    inset: 5px;
+    border: 1px solid var(--blue);
+    pointer-events: none;
   }
 
   .strip {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: baseline;
     gap: 12px;
-    padding: 22px 0 14px;
-    border-bottom: 1px solid var(--rule);
-    font-family: "Spline Sans Mono", ui-monospace, monospace;
-    font-size: 12.5px;
-    letter-spacing: 0.06em;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--blue);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--ink-soft);
+    color: var(--blue);
   }
-  .strip .mark { color: var(--red); font-weight: 500; }
+  .strip .site { color: var(--red); font-weight: 500; }
 
   .hebrew {
     direction: rtl;
     text-align: center;
-    padding: clamp(26px, 6vw, 40px) 0 clamp(20px, 4vw, 28px);
+    padding: clamp(24px, 5vw, 40px) 0 clamp(14px, 3vw, 22px);
   }
 
   .weekday-he {
-    font-size: clamp(18px, 4.5vw, 22px);
+    font-family: "Frank Ruhl Libre", Georgia, serif;
+    font-size: clamp(19px, 4.5vw, 24px);
     font-weight: 500;
-    color: var(--red);
-    margin: 0 0 6px;
-    letter-spacing: 0.01em;
+    color: var(--blue);
+    margin: 0 0 2px;
   }
 
+  /* Signature: off-register two-color print. Red impression, blue ghost. */
   .day-he {
-    font-size: clamp(90px, 26vw, 148px);
-    font-weight: 900;
-    line-height: 0.92;
-    margin: 4px 0 2px;
-    letter-spacing: -0.01em;
+    font-family: "Suez One", "Frank Ruhl Libre", serif;
+    font-size: clamp(96px, 27vw, 176px);
+    line-height: 1.05;
+    margin: 0;
+    color: var(--red);
+    text-shadow: 0.035em 0.04em 0 rgba(33, 64, 154, 0.35);
   }
 
   .month-he {
-    font-size: clamp(30px, 8vw, 42px);
-    font-weight: 500;
+    font-family: "Suez One", "Frank Ruhl Libre", serif;
+    font-size: clamp(36px, 9.5vw, 58px);
+    line-height: 1.2;
     margin: 0;
+    color: var(--blue);
   }
 
   .year-he {
-    font-family: "Spline Sans Mono", ui-monospace, monospace;
     direction: rtl;
-    font-size: 14px;
-    color: var(--ink-soft);
-    margin: 12px 0 0;
-    letter-spacing: 0.04em;
+    font-size: clamp(16px, 4vw, 19px);
+    font-weight: 500;
+    color: var(--ink);
+    margin: 8px 0 0;
+    letter-spacing: 0.06em;
   }
 
   .caption {
-    font-family: "Spline Sans Mono", ui-monospace, monospace;
-    font-size: 11.5px;
-    color: var(--ink-soft);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--blue-soft);
     text-align: center;
-    letter-spacing: 0.02em;
-    margin: 4px 0 0;
-    opacity: 0.85;
+    letter-spacing: 0.04em;
+    margin: 0 0 clamp(20px, 4vw, 30px);
   }
 
+  /* Hayom Yom: a print box with its label riding the top border. */
   .hayomyom {
-    border-top: 1px solid var(--rule);
-    margin-top: clamp(22px, 5vw, 30px);
-    padding-top: clamp(20px, 4vw, 26px);
-    text-align: right;
+    position: relative;
+    border: 1px solid var(--blue);
+    background: var(--tint);
+    margin-top: 14px;
+    padding: clamp(24px, 5vw, 30px) clamp(16px, 4vw, 28px) clamp(18px, 4vw, 24px);
   }
   .hy-title {
-    font-size: clamp(20px, 5vw, 26px);
-    font-weight: 700;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--paper);
+    border: 1px solid var(--blue);
+    font-family: "Suez One", "Frank Ruhl Libre", serif;
+    font-size: clamp(15px, 3.8vw, 18px);
+    font-weight: 400;
     color: var(--red);
-    margin: 0 0 12px;
-    text-align: center;
-    letter-spacing: 0.01em;
+    margin: 0;
+    padding: 3px 16px;
+    white-space: nowrap;
+    direction: rtl;
   }
   .hy-text {
-    font-size: clamp(16px, 4vw, 18.5px);
-    line-height: 1.85;
+    font-size: clamp(16px, 4vw, 18px);
+    line-height: 1.9;
     color: var(--ink);
     margin: 0;
     text-align: justify;
     text-justify: inter-word;
+    white-space: pre-line;
   }
+
   .note {
-    border-top: 1px solid var(--rule);
-    margin-top: clamp(24px, 5vw, 32px);
-    padding-top: clamp(22px, 5vw, 28px);
-    text-align: center;
-  }
-
-  .note h1 {
-    font-size: clamp(19px, 4.6vw, 23px);
-    font-weight: 700;
-    line-height: 1.35;
-    margin: 0 0 10px;
-  }
-  .note h1 .name { color: var(--red); }
-
-  .note p {
-    font-size: 15.5px;
-    line-height: 1.6;
-    color: var(--ink-soft);
-    margin: 0 auto;
-    max-width: 42ch;
+    margin-top: auto;
+    padding-top: clamp(24px, 5vw, 34px);
   }
 
   .ask {
-    margin-top: 22px;
     display: flex;
-    gap: 8px;
+    gap: 0;
   }
 
   .ask input {
     flex: 1;
     min-width: 0;
-    font-family: "Spline Sans Mono", ui-monospace, monospace;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
     font-size: 14px;
     color: var(--ink);
-    background: #fff;
-    border: 1px solid var(--rule);
-    border-radius: 6px;
+    background: var(--paper);
+    border: 1px solid var(--blue);
+    border-right: none;
+    border-radius: 0;
     padding: 12px 14px;
-    transition: border-color 0.15s ease;
   }
-  .ask input::placeholder { color: #9aa0b0; }
+  .ask input::placeholder { color: var(--blue-soft); }
   .ask input:focus {
     outline: none;
-    border-color: var(--ink);
-    box-shadow: 0 0 0 3px rgba(23, 35, 63, 0.08);
+    box-shadow: inset 0 0 0 1px var(--blue);
   }
 
   .ask button {
-    font-family: "Spline Sans Mono", ui-monospace, monospace;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
     font-size: 13px;
     font-weight: 500;
-    letter-spacing: 0.03em;
-    color: #fff;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--paper);
     background: var(--red);
     border: 1px solid var(--red);
-    border-radius: 6px;
-    padding: 0 18px;
+    border-radius: 0;
+    padding: 0 20px;
     cursor: pointer;
     white-space: nowrap;
-    transition: transform 0.1s ease, background 0.15s ease;
   }
-  .ask button:hover { background: #9c2f24; }
+  .ask button:hover { background: #B02219; border-color: #B02219; }
   .ask button:active { transform: translateY(1px); }
   .ask button:focus-visible {
-    outline: 3px solid rgba(178, 58, 46, 0.35);
+    outline: 3px solid rgba(206, 43, 35, 0.4);
     outline-offset: 2px;
   }
 
   .confirm {
-    font-family: "Spline Sans Mono", ui-monospace, monospace;
-    font-size: 12.5px;
-    color: var(--gold);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--blue);
     text-align: center;
-    margin: 14px 0 0;
+    margin: 12px 0 0;
     min-height: 1em;
   }
 
-  footer {
-    margin-top: 26px;
-    font-family: "Spline Sans Mono", ui-monospace, monospace;
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    opacity: 0.7;
-  }
-
-  @keyframes settle {
-    from { opacity: 0; transform: translateY(-16px) rotateX(6deg); }
-    to   { opacity: 1; transform: none; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .leaf { animation: none; }
-  }
-
   @media (max-width: 420px) {
-    .strip { flex-direction: column; align-items: flex-start; gap: 4px; }
-    .ask { flex-direction: column; }
+    .ask { flex-direction: column; gap: 8px; }
+    .ask input { border-right: 1px solid var(--blue); }
     .ask button { padding: 12px; }
   }
 </style>
 </head>
 <body>
 
-<main class="leaf">
+<main class="sheet">
   <div class="strip">
-    <span id="gy-weekday">—</span>
-    <span class="mark" id="gy-date">luach.day</span>
+    <span id="gy-date">—</span>
+    <span class="site">luach.day</span>
   </div>
 
   <div class="hebrew" lang="he">
@@ -348,17 +324,12 @@
     <p class="caption">Enable JavaScript to compute today's Hebrew date in your time zone.</p>
   </noscript>
 
-  <p class="caption">today's Hebrew date, before sunset. after nightfall, the page turns.</p>
-
   <section class="hayomyom" id="hy" lang="he" dir="rtl" hidden>
-    <h2 class="hy-title">היום יום</h2>
+    <h2 class="hy-title">היום יום · <span id="hy-date"></span></h2>
     <p class="hy-text" id="hy-text"></p>
   </section>
 
   <div class="note">
-    <h1>Today on the <span class="name">luach</span></h1>
-    <p>A luach is a Jewish calendar. This one shows today's Hebrew date — the one thing every luach owes you — and is still deciding what else to become. Have an idea? Send it.</p>
-
     <div class="ask">
       <input id="idea" type="text" placeholder="an idea for luach.day…" aria-label="Your idea for luach.day">
       <button id="send" type="button">Send idea</button>
@@ -367,11 +338,25 @@
   </div>
 </main>
 
-<footer>luach.day · today's Hebrew date</footer>
-
 <script>
   // Change this to your address, or replace sendIdea() with a fetch() to your endpoint.
   const IDEA_EMAIL = "ideas@luach.day";
+
+  // Hebrew numerals by gematria: 5 -> ה׳, 15 -> ט״ו, 786 -> תשפ״ו.
+  // Deterministic everywhere, unlike Intl's nu-hebr numbering system.
+  function heNumeral(n) {
+    const values = [
+      [400, "ת"], [300, "ש"], [200, "ר"], [100, "ק"], [90, "צ"], [80, "פ"],
+      [70, "ע"], [60, "ס"], [50, "נ"], [40, "מ"], [30, "ל"], [20, "כ"],
+      [10, "י"], [9, "ט"], [8, "ח"], [7, "ז"], [6, "ו"], [5, "ה"],
+      [4, "ד"], [3, "ג"], [2, "ב"], [1, "א"]
+    ];
+    if (!n) return "";
+    let rest = n % 1000, s = ""; // years drop the thousands: 5786 -> תשפ"ו
+    for (const [v, ch] of values) while (rest >= v) { s += ch; rest -= v; }
+    s = s.replace(/יה$/, "טו").replace(/יו$/, "טז"); // avoid spelling the Name
+    return s.length === 1 ? s + "׳" : s.slice(0, -1) + "״" + s.slice(-1);
+  }
 
   (function renderDate() {
     const now = new Date();
@@ -380,18 +365,26 @@
     const heParts = new Intl.DateTimeFormat("he-u-ca-hebrew", {
       day: "numeric", month: "long", year: "numeric"
     }).formatToParts(now);
-    const grab = t => (heParts.find(p => p.type === t) || {}).value || "";
+    const grab = t => {
+      const part = heParts.find(p => p.type === t);
+      return part ? part.value : "";
+    };
 
-    document.getElementById("he-day").textContent = grab("day");
-    document.getElementById("he-month").textContent = grab("month");
-    document.getElementById("he-year").textContent = grab("year");
+    // Day and year arrive as digits in some browsers; convert via gematria.
+    const heDay = heNumeral(parseInt(grab("day"), 10) || 0) || grab("day");
+    const heMonth = grab("month");
+    document.getElementById("he-day").textContent = heDay;
+    document.getElementById("he-month").textContent = heMonth;
+    document.getElementById("he-year").textContent =
+      heNumeral(parseInt(grab("year"), 10) || 0) || grab("year");
     document.getElementById("he-weekday").textContent =
       new Intl.DateTimeFormat("he", { weekday: "long" }).format(now);
+    document.getElementById("hy-date").textContent = `${heDay} ${heMonth}`;
 
-    document.getElementById("gy-weekday").textContent =
-      new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(now);
     document.getElementById("gy-date").textContent =
-      new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(now);
+      new Intl.DateTimeFormat("en-US", {
+        weekday: "long", month: "short", day: "numeric", year: "numeric"
+      }).format(now).replace(",", " ·");
 
     renderHayomYom(now);
   })();
