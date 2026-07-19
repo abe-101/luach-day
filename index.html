@@ -1,19 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
 <!--
-  luach.day — temporary landing page
-  A tear-off calendar leaf that shows today's Hebrew date and asks visitors for ideas.
-  Single self-contained file. Host it anywhere static.
+  luach.day — shows today's Hebrew date (a "luach" is a Jewish calendar/almanac)
+  and gathers ideas for what the site should grow into.
+  Single self-contained static file. Host it anywhere. No build, no backend.
 
-  To collect ideas: by default the "Send idea" button opens an email.
-  Change IDEA_EMAIL below to your address, or swap the sendIdea() body
-  for a fetch() to a form endpoint (Formspree, your own Django view, etc).
+  Ideas arrive by email: the "Send idea" button opens the visitor's mail client
+  addressed to IDEA_EMAIL below. Change it, or swap sendIdea() for a fetch().
 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>luach.day</title>
-<meta name="description" content="A day on the luach. This domain hasn't decided what it wants to be yet.">
+
+<title>Today's Hebrew Date — luach.day</title>
+<meta name="description" content="luach.day shows today's Hebrew date — the day, month and year on the Jewish calendar, before sunset. A luach is a Jewish calendar; help decide what this one becomes.">
+<link rel="canonical" href="https://luach.day/">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#B23A2E">
+<meta name="author" content="luach.day">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="luach.day">
+<meta property="og:title" content="Today's Hebrew Date — luach.day">
+<meta property="og:description" content="The day, month and year on the Jewish calendar, shown as a tear-off luach leaf. Help decide what luach.day becomes.">
+<meta property="og:url" content="https://luach.day/">
+<meta property="og:image" content="https://luach.day/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Today's Hebrew Date — luach.day">
+<meta name="twitter:description" content="The day, month and year on the Jewish calendar, shown as a tear-off luach leaf.">
+<meta name="twitter:image" content="https://luach.day/og-image.png">
+
+<!-- Inline SVG favicon: a small red tear-off leaf. No external file, no service. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20x='5'%20y='4'%20width='22'%20height='25'%20rx='3'%20fill='%23FBF8F1'%20stroke='%2317233F'%20stroke-width='1.5'/%3E%3Cline%20x1='5'%20y1='11'%20x2='27'%20y2='11'%20stroke='%2317233F'%20stroke-width='1.5'/%3E%3Ctext%20x='16'%20y='25'%20font-family='Georgia,serif'%20font-size='13'%20font-weight='bold'%20text-anchor='middle'%20fill='%23B23A2E'%3E%D7%99%D7%95%D7%9D%3C/text%3E%3C/svg%3E">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Structured data: helps search engines understand the page. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://luach.day/#website",
+      "url": "https://luach.day/",
+      "name": "luach.day",
+      "description": "Today's Hebrew date — the day, month and year on the Jewish calendar."
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://luach.day/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is a luach?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A luach is a Jewish calendar or almanac. At minimum it tells you the Hebrew date — the day, month and year — and traditionally also times like sunset and nightfall that mark when the Jewish day begins and ends."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is today's Hebrew date?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "luach.day shows today's Hebrew date in your own time zone, computed in your browser from the Gregorian date. Open the page to see the current day, month and year on the Jewish calendar."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does the Hebrew date change at nightfall?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "On the Jewish calendar a new day begins at nightfall, not midnight. So after dark the Hebrew date advances to the next day even though the civil date has not."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 
 <style>
   :root {
@@ -149,7 +223,7 @@
     line-height: 1.6;
     color: var(--ink-soft);
     margin: 0 auto;
-    max-width: 40ch;
+    max-width: 42ch;
   }
 
   .ask {
@@ -207,6 +281,34 @@
     min-height: 1em;
   }
 
+  /* Collapsible "about" — real static text for readers and crawlers,
+     tucked away so it doesn't clutter the leaf. */
+  .about {
+    margin-top: 20px;
+    text-align: left;
+    font-family: "Spline Sans Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+  }
+  .about summary {
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--ink-soft);
+    list-style: none;
+  }
+  .about summary::-webkit-details-marker { display: none; }
+  .about summary::before { content: "＋ "; color: var(--red); }
+  .about[open] summary::before { content: "－ "; }
+  .about p {
+    font-size: 13px;
+    line-height: 1.65;
+    text-align: left;
+    margin: 12px 0 0;
+    max-width: none;
+  }
+
   footer {
     margin-top: 26px;
     font-family: "Spline Sans Mono", ui-monospace, monospace;
@@ -232,6 +334,8 @@
     .ask button { padding: 12px; }
   }
 </style>
+</head>
+<body>
 
 <main class="leaf">
   <div class="strip">
@@ -239,28 +343,37 @@
     <span class="mark" id="gy-date">luach.day</span>
   </div>
 
-  <div class="hebrew">
+  <div class="hebrew" lang="he">
     <p class="weekday-he" id="he-weekday">&nbsp;</p>
     <div class="day-he" id="he-day">…</div>
     <p class="month-he" id="he-month">&nbsp;</p>
     <p class="year-he" id="he-year">&nbsp;</p>
   </div>
 
-  <p class="caption">today, before sunset. after nightfall, flip the page.</p>
+  <noscript>
+    <p class="caption">Enable JavaScript to compute today's Hebrew date in your time zone.</p>
+  </noscript>
+
+  <p class="caption">today's Hebrew date, before sunset. after nightfall, the page turns.</p>
 
   <div class="note">
-    <h1>This is <span class="name">luach.day</span>, and it hasn't decided what to be yet.</h1>
-    <p>For now it just shows the date, which is the one thing a luach is obligated to do. What should it grow into?</p>
+    <h1>Today on the <span class="name">luach</span></h1>
+    <p>A luach is a Jewish calendar. This one shows today's Hebrew date — the one thing every luach owes you — and is still deciding what else to become. Have an idea? Send it.</p>
 
     <div class="ask">
       <input id="idea" type="text" placeholder="an idea for luach.day…" aria-label="Your idea for luach.day">
       <button id="send" type="button">Send idea</button>
     </div>
     <p class="confirm" id="confirm" role="status"></p>
+
+    <details class="about">
+      <summary>About the luach</summary>
+      <p>A <strong>luach</strong> (לוח) is the Hebrew word for a calendar or almanac. On the Jewish calendar, each day carries a Hebrew date — a day, a month such as Tishrei, Nisan or Elul, and a year counted from creation. The day begins at nightfall rather than midnight, so today's Hebrew date shown here advances after dark. luach.day computes the current date in your own browser and time zone; no account, no tracking, no app to install.</p>
+    </details>
   </div>
 </main>
 
-<footer>a placeholder, for now</footer>
+<footer>luach.day · today's Hebrew date</footer>
 
 <script>
   // Change this to your address, or replace sendIdea() with a fetch() to your endpoint.
@@ -306,3 +419,5 @@
     if (e.key === "Enter") sendIdea();
   });
 </script>
+</body>
+</html>
