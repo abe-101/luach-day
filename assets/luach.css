@@ -1,0 +1,315 @@
+/* luach.day — two-color print luach: ultramarine + red on paper.
+   Shared by the homepage and every generated archive page. */
+
+:root {
+  --paper: #FDFDFA;
+  --blue: #21409A;
+  --blue-soft: #5B6FB5;
+  --red: #CE2B23;
+  --ink: #14181F;
+  --tint: #EEF1F9;
+  --rule: #BFC9E6;
+  --frame-gap: clamp(10px, 2.5vw, 22px);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+
+body {
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Frank Ruhl Libre", Georgia, serif;
+  padding: var(--frame-gap);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The whole page is the printed sheet: double ultramarine frame. */
+.sheet {
+  position: relative;
+  min-height: calc(100vh - 2 * var(--frame-gap));
+  border: 3px solid var(--blue);
+  padding: clamp(18px, 4vw, 44px) clamp(16px, 5vw, 56px) clamp(26px, 4vw, 40px);
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+.sheet::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid var(--blue);
+  pointer-events: none;
+}
+
+.strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--blue);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+.strip a { color: var(--blue); text-decoration: none; }
+.strip a:hover { text-decoration: underline; }
+.strip .site { color: var(--red); font-weight: 500; text-decoration: none; }
+
+.hebrew {
+  direction: rtl;
+  text-align: center;
+  padding: clamp(24px, 5vw, 40px) 0 clamp(14px, 3vw, 22px);
+}
+
+.weekday-he {
+  font-size: clamp(19px, 4.5vw, 24px);
+  font-weight: 500;
+  color: var(--blue);
+  margin: 0 0 2px;
+}
+
+/* Signature: off-register two-color print. Red impression, blue ghost. */
+.day-he {
+  font-family: "Suez One", "Frank Ruhl Libre", serif;
+  font-size: clamp(96px, 27vw, 176px);
+  line-height: 1.05;
+  margin: 0;
+  color: var(--red);
+  text-shadow: 0.035em 0.04em 0 rgba(33, 64, 154, 0.35);
+}
+
+.month-he {
+  font-family: "Suez One", "Frank Ruhl Libre", serif;
+  font-size: clamp(36px, 9.5vw, 58px);
+  line-height: 1.2;
+  margin: 0;
+  color: var(--blue);
+}
+
+.year-he {
+  direction: rtl;
+  font-size: clamp(16px, 4vw, 19px);
+  font-weight: 500;
+  color: var(--ink);
+  margin: 8px 0 0;
+  letter-spacing: 0.06em;
+}
+
+.caption {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--blue-soft);
+  text-align: center;
+  letter-spacing: 0.04em;
+  margin: 0 0 clamp(20px, 4vw, 30px);
+}
+
+/* Hayom Yom: a print box with its label riding the top border. */
+.hayomyom {
+  position: relative;
+  border: 1px solid var(--blue);
+  background: var(--tint);
+  margin-top: 14px;
+  padding: clamp(24px, 5vw, 30px) clamp(16px, 4vw, 28px) clamp(18px, 4vw, 24px);
+}
+.hy-title {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--paper);
+  border: 1px solid var(--blue);
+  font-family: "Suez One", "Frank Ruhl Libre", serif;
+  font-size: clamp(15px, 3.8vw, 18px);
+  font-weight: 400;
+  color: var(--red);
+  margin: 0;
+  padding: 3px 16px;
+  white-space: nowrap;
+  direction: rtl;
+}
+.hy-text {
+  font-size: clamp(16px, 4vw, 18px);
+  line-height: 1.9;
+  color: var(--ink);
+  margin: 0;
+  text-align: justify;
+  text-justify: inter-word;
+  white-space: pre-line;
+}
+
+/* ---- Archive pages ---- */
+
+.page-title {
+  font-family: "Suez One", "Frank Ruhl Libre", serif;
+  font-size: clamp(30px, 7vw, 46px);
+  line-height: 1.15;
+  color: var(--blue);
+  margin: clamp(22px, 5vw, 34px) 0 6px;
+  text-align: center;
+}
+.page-title .num { color: var(--red); }
+
+.subtitle {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--blue-soft);
+  text-align: center;
+  margin: 0 0 clamp(22px, 5vw, 32px);
+}
+
+.prose { font-size: clamp(15px, 3.6vw, 17px); line-height: 1.75; }
+.prose p { margin: 0 0 1em; }
+.prose a { color: var(--blue); text-decoration-color: var(--rule); }
+.prose a:hover { color: var(--red); }
+
+.section-head {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue);
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 6px;
+  margin: clamp(28px, 6vw, 40px) 0 14px;
+}
+
+table.dates { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.dates th, table.dates td {
+  text-align: left;
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--rule);
+}
+table.dates th {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--blue-soft);
+  font-weight: 500;
+}
+table.dates td.he { direction: rtl; text-align: right; color: var(--blue); }
+
+/* Day and month grids on the hub pages. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 6px;
+  padding: 0;
+  margin: 0 0 8px;
+  list-style: none;
+}
+.grid.months { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); }
+.grid a {
+  display: block;
+  border: 1px solid var(--rule);
+  padding: 10px 8px;
+  text-align: center;
+  text-decoration: none;
+  color: var(--blue);
+  font-size: 14px;
+}
+.grid a:hover { border-color: var(--red); color: var(--red); }
+.grid a .he { display: block; direction: rtl; font-size: 12px; color: var(--blue-soft); }
+.grid a:hover .he { color: var(--red); }
+.grid li.empty a { color: var(--blue-soft); border-style: dashed; }
+
+/* Previous / next day. */
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: clamp(26px, 5vw, 36px);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+}
+.pager a { color: var(--blue); text-decoration: none; }
+.pager a:hover { color: var(--red); text-decoration: underline; }
+
+.footer {
+  margin-top: clamp(24px, 5vw, 32px);
+  padding-top: 14px;
+  border-top: 2px solid var(--blue);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--blue-soft);
+  text-align: center;
+}
+.footer a { color: var(--blue); text-decoration: none; }
+.footer a:hover { color: var(--red); text-decoration: underline; }
+
+.note-box {
+  border: 1px dashed var(--rule);
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--blue-soft);
+}
+
+/* ---- Homepage idea box ---- */
+
+.note { margin-top: auto; padding-top: clamp(24px, 5vw, 34px); }
+.ask { display: flex; gap: 0; }
+.ask input {
+  flex: 1;
+  min-width: 0;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--blue);
+  border-right: none;
+  border-radius: 0;
+  padding: 12px 14px;
+}
+.ask input::placeholder { color: var(--blue-soft); }
+.ask input:focus { outline: none; box-shadow: inset 0 0 0 1px var(--blue); }
+.ask button {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--red);
+  border: 1px solid var(--red);
+  border-radius: 0;
+  padding: 0 20px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.ask button:hover { background: #B02219; border-color: #B02219; }
+.ask button:active { transform: translateY(1px); }
+.ask button:focus-visible {
+  outline: 3px solid rgba(206, 43, 35, 0.4);
+  outline-offset: 2px;
+}
+.confirm {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--blue);
+  text-align: center;
+  margin: 12px 0 0;
+  min-height: 1em;
+}
+
+@media (max-width: 420px) {
+  .ask { flex-direction: column; gap: 8px; }
+  .ask input { border-right: 1px solid var(--blue); }
+  .ask button { padding: 12px; }
+}
+
+@media print {
+  body { padding: 0; }
+  .sheet { border-width: 2px; min-height: auto; }
+  .note, .pager { display: none; }
+}

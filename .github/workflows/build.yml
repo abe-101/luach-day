@@ -1,0 +1,53 @@
+# Regenerates the Hayom Yom archive and sitemap.
+#
+# The entry text is fixed per Hebrew date, so pages only need rebuilding when
+# the data or the generator changes. The "when is this date" tables count
+# forward from the current Hebrew year, so a monthly run keeps them from
+# drifting into the past.
+#
+# Assumes Pages is served from the default branch at the repository root, so
+# the generated HTML is committed back rather than uploaded as an artifact.
+
+name: Build archive
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'hayomyom.json'
+      - 'build/**'
+      - '.github/workflows/build.yml'
+  schedule:
+    - cron: '0 4 1 * *'   # 04:00 UTC on the 1st of each month
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-archive
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify the Hebrew calendar against ICU
+        run: python3 build/verify_calendar.py
+
+      - name: Generate pages and sitemap
+        run: python3 build/generate.py
+
+      - name: Commit if anything changed
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Rebuild Hayom Yom archive and sitemap"
+          git push
